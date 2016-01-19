@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\NurseStaffevent */
 
-$this->title = Yii::t('app', 'Create Nurse Staffevent');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Nurse Event'), 'url' => ['nurse-event/index']];
+$this->title = Yii::t('app', 'เพิ่มข้อมูล Staff Mix');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'รายการกิจกรรม'), 'url' => ['nurse-event/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="nurse-staffevent-create">

@@ -78,7 +78,7 @@ class NurseStaffController extends Controller
         $model = new NurseStaff();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->staff_ref]);
+            return $this->redirect(['nurse-staff/index']);
         } else {
             return $this->render('create', [
                 'model' => $model,

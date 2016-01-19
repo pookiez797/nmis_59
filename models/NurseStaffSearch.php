@@ -18,7 +18,7 @@ class NurseStaffSearch extends NurseStaff
     public function rules()
     {
         return [
-            [['staff_ref', 'code', 'ward', 'position', 'priority'], 'integer'],
+            [['staff_ref', 'code', 'ward', 'position', 'priority', 'hn', 'part_time', 'assist', 'sup', 'wardclerk'], 'integer'],
             [['no', 'title', 'name', 'surname', 'lastupdate'], 'safe'],
         ];
     }
@@ -61,6 +61,11 @@ class NurseStaffSearch extends NurseStaff
             'ward' => $this->ward,
             'position' => $this->position,
             'priority' => $this->priority,
+            'hn' => $this->hn,
+            'part_time' => $this->part_time,
+            'assist' => $this->assist,
+            'sup' => $this->sup,
+            'wardclerk' => $this->wardclerk,
             'lastupdate' => $this->lastupdate,
         ]);
 

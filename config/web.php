@@ -8,6 +8,16 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'th_TH',
     'timeZone' => 'Asia/Bangkok',
+    'modules' => [
+            'gridview' => [
+                'class' => '\kartik\grid\Module'
+            // enter optional module parameters below - only if you need to  
+            // use your own export download action or custom translation 
+            // message source
+            // 'downloadAction' => 'gridview/export/download',
+            // 'i18n' => []
+            ]
+        ],
     'components' => [
         'thaiFormatter' => [
             'class' => 'dixonsatit\thaiYearFormatter\ThaiYearFormatter',
@@ -20,6 +30,7 @@ $config = [
 //            'timeFormat' => 'php:H:i',
 //            'timeZone' => 'Asia/Bangkok',
 //        ],
+        
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'A27M6haQKOGKEJwdo4YCxbn_JEQhEuOX',

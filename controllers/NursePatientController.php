@@ -18,6 +18,7 @@ use app\models\WorkloadBed;
 use app\models\WorkloadTeam;
 use yii\db\Query;
 use app\models\Ward;
+
 /**
  * NursePatientController implements the CRUD actions for NursePatient model.
  */
@@ -78,15 +79,20 @@ class NursePatientController extends Controller {
         $ward = Yii::$app->user->identity->ward;
         $ward2 = Yii::$app->user->identity->ward2;
         $event = NurseEvent::findOne($event_ref);
-        $event_patient = NursePatient::find()->where(['event_ref' => $event_ref, 'disc_type' => 0])->all();
+        $event_patient = NursePatient::find()->where(['event_ref' => $event_ref, 'disc_type' => 0])->orderBy('bed_no asc')->all();
+//        echo $event_patient->createCommand()->getRawSql();
+//        die();
+        $event_patient2 = NursePatient::find()->where("event_ref = $event_ref and an not in (select an from workload_ptdisc where ward = '$ward' and lastupdate <= '$event->date 23:59:59' ) ")->orderBy('bed_no asc')->all();
         $event_prevp = 0;
         $event_prevd = '';
         $patient_no = 0;
-        $event_date = new DateTime($event->date);
+
         $diag = new WorkloadDiag();
         $diag_an = WorkloadDiag::find()->all();
 
-        if ($event->period == 1) {
+        $event_date = new DateTime($event->date);
+
+        if ($event->period == 1) { // ถ้าเป็นเวรดึก เวรก่อนหน้า จะเป็นเวรเช้าของวันก่อนหน้า
             $event_prevp = 3;
             $event_date->modify('-1 day');
             $event_prevd = $event_date->format('Y-m-d');
@@ -104,43 +110,53 @@ class NursePatientController extends Controller {
         $prev_data = null;
 
         $check_prev = "";
-        if ($event_patient == null) {
+        if ($event_patient == null) { 
             if ($event_prev == null) {
                 $prev_data = null;
                 $check_prev = "no eventprev no prev no patient";
+                Yii::$app->getSession()->setFlash('alert', [
+                    'body' => 'ไม่มีข้อมูลย้อนหลัง กรุณากรอกข้อมูล',
+                    'options' => ['class' => 'alert-danger']
+                ]);
             } else {
                 $prev_data = NursePatient::find()->where([
                             'event_ref' => $event_prev->ref
-                        ])->all();
+                        ])->orderBy('bed_no asc')->all();
                 if ($prev_data == null) {
                     $check_prev = "no prev no patient";
+                    Yii::$app->getSession()->setFlash('alert', [
+                        'body' => 'ไม่มีข้อมูลย้อนหลัง กรุณากรอกข้อมูล',
+                        'options' => ['class' => 'alert-warning']
+                    ]);
                 } else {
                     $check_prev = "have prev no patient";
+                    Yii::$app->getSession()->setFlash('alert', [
+                        'body' => 'มีข้อมูลย้อนหลัง กรุณาบันทึกข้อมูล',
+                        'options' => ['class' => 'alert-warning']
+                    ]);
                 }
             }
         } else {
             $prev_data = NursePatient::find()->where([
                         'event_ref' => $event_ref
-                    ])->all();
+                    ])->orderBy('bed_no asc')->all();
             $check_prev = "have patient";
+            Yii::$app->getSession()->setFlash('alert', [
+                'body' => 'มีข้อมูลแล้ว',
+                'options' => ['class' => 'alert-info']
+            ]);
         }
 
-//        echo var_dump($event_patient);
-//       $model = new NursePatient();
-//        $sql = 'select * from ipd_ipd i
-//where i.ward = ' . $ward . ' 
-//and (i.disc is null or i.disc = "0000-00-00" or i.disc = "" or i.disc = "' . $event->date . '")
-//and i.admite <= "' . $event->date . '"
-//and not exists (select "x" from db_nurse.workload_ptdisc p where p.ward = ' . $ward . ' and i.an = p.an )';
 
-        $sql = 'select * from ipd_ipd i
+         $sql = 'select distinct * from (select * from ipd_ipd i
 where i.ward in (' . $ward . ', ' . $ward2 . ')
 and (i.disc is null or i.disc = "0000-00-00" or i.disc = "" or i.disc = "' . $event->date . '")
 and i.admite <= "' . $event->date . '"
 and not exists (
 select "x" from db_nurse.workload_ptdisc p 
 where p.ward in (' . $ward . ', ' . $ward2 . ') and i.an = p.an '
-                . 'and p.lastupdate < "' . $event->date . '" )
+                . 'and (p.lastupdate < "' . $event->date . '" 
+                    or lastupdate between "' . $event->date . ' 00:00:00" and "' . $event->date . ' 23:59:59"))
 union all
 select * from ipd_ipd i
 where an in (select an 
@@ -152,57 +168,82 @@ and (i.disc is null or i.disc = "0000-00-00" or i.disc = "" or i.disc = "' . $ev
 and not exists (
 select "x" from db_nurse.workload_ptdisc p 
 where p.ward in (' . $ward . ', ' . $ward2 . ') and i.an = p.an '
-                . 'and p.lastupdate < "' . $event->date . '" )';
-        $patient = IpdIpd::findBySql($sql)->all();
+                . 'and (p.lastupdate < "' . $event->date . '" '
+                . 'or lastupdate between "' . $event->date . ' 00:00:00" and "' . $event->date . ' 23:59:59"))) nurse_db';
+        $patient = '';
+        if ($event->patient_flag == 1) {
+            $patient = $event_patient;
+            //ถ้ามีข้อมูลคนไข้ใน วันที่และเวรนี้แล้ว ให้ดึงข้อมูลที่มีอยู่มาแก้ไข
+        } else {
+            $patient = IpdIpd::findBySql($sql)->all();
+            //ถ้าไม่มีข้อมูลคนไข้ หรือไม่เคยบันทึกเลย ให้ดึงจากฐานข้อมูลใน ipd_ipd
+        }
+
         $model = new NursePatient();
 
         if (isset($_POST['NursePatient'])) {
             if ($event_patient != null) {
                 if ($model->validate()) {
                     foreach ($event_patient as $v) {
-                        $model = NursePatient::find()->where(['event_ref' => $v->event_ref, 'hn' => $v->hn])->one();
-                        $model->attributes = $_POST['NursePatient'][$v->hn];
-                        $model->save();
-                        $event->patient_flag = 1;
-                        $event->save();
-                        if (isset($_POST['NursePatient'][$v->hn]) && $_POST['NursePatient'][$v->hn]['disc_type'] != 0) {
-                            $model_ptdisc = new WorkloadPtdisc();
-                            $model_ptdisc->hn = $v->hn;
-                            $model_ptdisc->an = $v->an;
-                            $model_ptdisc->title = $v->title;
-                            $model_ptdisc->name = $v->name;
-                            $model_ptdisc->surname = $v->surname;
-                            $model_ptdisc->ward = $ward;
-                            $model_ptdisc->movestatus = $_POST['NursePatient'][$v->hn]['disc_type'];
-                            if ($model_ptdisc->validate()) {
-                                $model_ptdisc->save();
+                        if (isset($_POST['pt_id'][$v->hn])) { // ถ้า checkbox = ture ให้บันทึกข้อมูล ถ้าไม่มีให้ข้าม
+                        
+                            $model = NursePatient::find()->where(['event_ref' => $v->event_ref, 'hn' => $v->hn])->one();
+                            $model->attributes = $_POST['NursePatient'][$v->hn];
+                            $model->save();
+                            $event->patient_flag = 1;
+                            $event->save();
+                            if (isset($_POST['NursePatient'][$v->hn]) && $_POST['NursePatient'][$v->hn]['disc_type'] != 0) {
+                                $model_ptdisc = new WorkloadPtdisc();
+                                $model_ptdisc->hn = $v->hn;
+                                $model_ptdisc->an = $v->an;
+                                $model_ptdisc->title = $v->title;
+                                $model_ptdisc->name = $v->name;
+                                $model_ptdisc->surname = $v->surname;
+                                $model_ptdisc->ward = $ward;
+                                $model_ptdisc->movestatus = $_POST['NursePatient'][$v->hn]['disc_type'];
+                                if ($model_ptdisc->validate()) {
+                                    $model_ptdisc->save();
+                                }
                             }
                         }
                     }
+                    Yii::$app->getSession()->setFlash('alert', [
+                        'body' => 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                        'options' => ['class' => 'alert-success']
+                    ]);
                     return $this->redirect(['/nurse-event']);
                 }
             } else {
                 if ($model->validate()) {
                     foreach ($patient as $v) {
-                        $model = new NursePatient();
-                        $model->attributes = $_POST['NursePatient'][$v->hn];
-                        $model->save();
-                        $event->patient_flag = 1;
-                        $event->save();
-                        if (isset($_POST['NursePatient'][$v->hn]) && $_POST['NursePatient'][$v->hn]['disc_type'] != 0) {
-                            $model_ptdisc = new WorkloadPtdisc();
-                            $model_ptdisc->hn = $v->hn;
-                            $model_ptdisc->an = $v->an;
-                            $model_ptdisc->title = $v->title;
-                            $model_ptdisc->name = $v->name;
-                            $model_ptdisc->surname = $v->surname;
-                            $model_ptdisc->ward = $ward;
-                            $model_ptdisc->movestatus = $_POST['NursePatient'][$v->hn]['disc_type'];
-                            if ($model_ptdisc->validate()) {
-                                $model_ptdisc->save();
+//                       print_r($_POST['pt_id']);
+                        if (isset($_POST['pt_id'][$v->hn])) {
+
+//                       print_r($_POST['NursePatient']);
+                            $model = new NursePatient();
+                            $model->attributes = $_POST['NursePatient'][$v->hn];
+                            $model->save();
+                            $event->patient_flag = 1;
+                            $event->save();
+                            if (isset($_POST['NursePatient'][$v->hn]) && $_POST['NursePatient'][$v->hn]['disc_type'] != 0) {
+                                $model_ptdisc = new WorkloadPtdisc();
+                                $model_ptdisc->hn = $v->hn;
+                                $model_ptdisc->an = $v->an;
+                                $model_ptdisc->title = $v->title;
+                                $model_ptdisc->name = $v->name;
+                                $model_ptdisc->surname = $v->surname;
+                                $model_ptdisc->ward = $ward;
+                                $model_ptdisc->movestatus = $_POST['NursePatient'][$v->hn]['disc_type'];
+                                if ($model_ptdisc->validate()) {
+                                    $model_ptdisc->save();
+                                }
                             }
                         }
                     }
+                    Yii::$app->getSession()->setFlash('alert', [
+                        'body' => 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                        'options' => ['class' => 'alert-success']
+                    ]);
                     return $this->redirect(['/nurse-event']);
                 }
             }
@@ -261,9 +302,11 @@ where p.ward in (' . $ward . ', ' . $ward2 . ') and i.an = p.an '
     }
 
     public function actionAssignReport($event_ref) {
+
         $ward = Yii::$app->user->identity->ward;
         $event = NurseEvent::findOne($event_ref);
-        $ward_name = Ward::find()->where('code=:code',[':code'=>$ward])->one();
+        $ward_name = Ward::find()->where('code=:code', [':code' => $ward])->one();
+        $team = WorkloadTeam::find()->where('ward = :ward', [':ward' => $ward])->all();
         $sql = "SELECT  bed.ward 
 ,     bed.team_name 
 ,     bed.bed_type 
@@ -272,35 +315,66 @@ where p.ward in (' . $ward . ', ' . $ward2 . ') and i.an = p.an '
 ,     patient.name 
 ,     patient.surname 
 ,     patient.pt_type
+,     bed.team_ref
+,     diag.diag
+,     diag.last_update
 
 FROM   (SELECT  a.ward
+,     a.ref as team_ref
 ,     a.team_name
 ,     b.bed_type
 ,     b.bed_no
-
+,     b.ref
 FROM   workload_team  a
 RIGHT JOIN  workload_bed  b  ON  a.ref = b.team_ref
 
-WHERE   a.ward  = '".$ward."')    bed
+WHERE   a.ward  = '" . $ward . "')    bed
 LEFT OUTER JOIN (SELECT  c.bed_type
 ,        c.bed_no
 ,        c.title
 ,        c.name
 ,        c.surname
 ,        c.pt_type
+,        c.an
 FROM      nurse_patient   c
-WHERE      c.event_ref  =  ".$event_ref.") patient ON bed.bed_type  =  patient.bed_type
- AND bed.bed_no   =  patient.bed_no";
-        
+WHERE      c.event_ref  =  " . $event_ref . " and c.disc_type=0) patient ON bed.bed_type  =  patient.bed_type
+ AND bed.bed_no   =  patient.bed_no
+LEFT JOIN (
+SELECT  *
+FROM   workload_diag
+WHERE   (an,last_update) IN (SELECT  an,MAX(last_update)  FROM  workload_diag GROUP BY an)
+) diag on patient.an = diag.an
+ ORDER BY bed.ref,bed.bed_no";
+
 //        $patient = NursePatient::findBySql($sql)->all();
 //        print_r($patient);
-        
-$command = Yii::$app->db->createCommand($sql);
-$patient = $command->queryAll();
+
+        $command = Yii::$app->db->createCommand($sql);
+        $patient = $command->queryAll();
 //var_dump($patient);
 //echo $sql;
-        
-        return $this->render('assign_report',['patient'=>$patient,'event'=>$event,'ward_name'=>$ward_name]);
+
+        return $this->renderPartial('assign_report', [
+                    'patient' => $patient,
+                    'event' => $event,
+                    'ward_name' => $ward_name,
+                    'team' => $team
+        ]);
+    }
+
+    public function actionDailyReport($event_ref) {
+
+        $ward = Yii::$app->user->identity->ward;
+        $event = NurseEvent::findOne($event_ref);
+        $ward_name = Ward::find()->where('code=:code', [':code' => $ward])->one();
+        $patient = NursePatient::find()->where('event_ref=:event_ref and disc_type=0',[':event_ref'=>$event_ref])->orderBy('bed_type desc,bed_no asc')->all();
+
+
+        return $this->renderPartial('daily_report', [
+                    'patient' => $patient,
+                    'event' => $event,
+                    'ward_name' => $ward_name,
+        ]);
     }
     /**
      * Finds the NursePatient model based on its primary key value.

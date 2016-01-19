@@ -11,9 +11,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="nurse-patient-create">
     <?php //  Html::encode($this->title) 
-    echo  $check_prev;
-    echo $event_prevp;
-    echo $event_prevd;
+//    echo  $check_prev;
+//    echo $event_prevp;
+//    echo $event_prevd;
     ?>
     
     <?=

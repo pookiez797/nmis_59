@@ -10,12 +10,13 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
-
+use yii\data\ActiveDataProvider;
 /**
  * WorkloadDiagController implements the CRUD actions for WorkloadDiag model.
  */
 class WorkloadDiagController extends Controller
 {
+    public $layout = 'blank';
     public function behaviors()
     {
         return [
@@ -69,17 +70,28 @@ class WorkloadDiagController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($an)
     {
         $model = new WorkloadDiag();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->ref]);
-        } else {
-            return $this->renderAjax('create', [
+        $fullname = Yii::$app->request->get('fullname');
+        $diag_query = WorkloadDiag::find()->byAn($an);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $diag_query,
+        ]);
+        
+        if(Yii::$app->request->post('WorkloadDiag') && isset($an)){
+            $model->attributes = Yii::$app->request->post('WorkloadDiag');
+            $model->an = $an;
+            $model->save();
+            return $this->refresh();
+        }else {
+            return $this->render('create', [
                 'model' => $model,
+                'dataProvider'=>$dataProvider,
+                'fullname'=>$fullname
             ]);
         }
+        
     }
 
     /**
@@ -109,9 +121,12 @@ class WorkloadDiagController extends Controller
      */
     public function actionDelete($id)
     {
+        $diag_an = $this->findModel($id)->an;
+        $fullname = Yii::$app->request->get('fullname');
         $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        
+        return $this->redirect(['workload-diag/create','an' => $diag_an,'fullname'=>$fullname]);
+      
     }
 
     /**

@@ -84,14 +84,14 @@ class NursePatient extends \yii\db\ActiveRecord {
             'dx1' => Yii::t('app', 'Dx1'),
             'admit_type' => Yii::t('app', 'Admit Type'),
             'disc_type' => Yii::t('app', 'Disc Type'),
-            'disability' => Yii::t('app', 'Disability'),
-            'operate' => Yii::t('app', 'Operate'),
-            'prepare' => Yii::t('app', 'Prepare'),
-            'cpr' => Yii::t('app', 'Cpr'),
-            'uti' => Yii::t('app', 'Uti'),
-            'vap' => Yii::t('app', 'Vap'),
-            'phleb' => Yii::t('app', 'Phleb'),
-            'cutdown' => Yii::t('app', 'Cutdown'),
+            'disability' => Yii::t('app', ''),
+            'operate' => Yii::t('app', ''),
+            'prepare' => Yii::t('app', ''),
+            'cpr' => Yii::t('app', ''),
+            'uti' => Yii::t('app', ''),
+            'vap' => Yii::t('app', ''),
+            'phleb' => Yii::t('app', ''),
+            'cutdown' => Yii::t('app', ''),
             'doctor' => Yii::t('app', 'Doctor'),
             'inp_id' => Yii::t('app', 'Inp ID'),
             'lastupdate' => Yii::t('app', 'Lastupdate'),
@@ -101,14 +101,14 @@ class NursePatient extends \yii\db\ActiveRecord {
     public static function itemAlias($type) {
         $items = [
             'item' => [
-                self::ITEM_OFF => 'X = OFF',
-                self::ITEM_ON => 'O = ON'
+                self::ITEM_OFF => 'X =OFF',
+                self::ITEM_ON => 'O =ON'
             ],
             'tube' => [
-                self::TUBE_X => 'X = OFF',
-                self::TUBE_B => 'B = On Bird',
-                self::TUBE_V => 'V = On Ventilator',
-                self::TUBE_T => 'T = T-piece'
+                self::TUBE_X => 'X =OFF',
+                self::TUBE_B => 'B =On Bird',
+                self::TUBE_V => 'V =On Ventilator',
+                self::TUBE_T => 'T =T-piece'
             ]
         ];
         return array_key_exists($type, $items) ? $items[$type] : [];

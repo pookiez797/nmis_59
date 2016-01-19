@@ -54,6 +54,11 @@ AppAsset::register($this);
                         ['label' => 'เจ้าหน้าที่', 'url' => ['/nurse-staff/index']],
                     ],
                 ],
+            ['label' => 'รายงาน',
+                    'items' => [
+                        ['label' => 'ข้อมูล Cardex ประจำเดือน', 'url' => ['/report/cardex-report'],'linkOptions'=>['target'=>'_blank'] ],
+                    ],
+                ],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/site/login']] :
                 [
@@ -76,7 +81,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; ศูนย์เทคโนโลยีสารสนเทศและการสื่อสาร โรงพยาบาลขอนแก่น Tel.1178 <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>

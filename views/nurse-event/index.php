@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use app\models\NurseEvent;
 //use kartik\date\DatePicker;
 use kartik\widgets\DatePicker;
@@ -78,11 +78,24 @@ $this->params['breadcrumbs'][] = $this->title;
               [
 
                 'value' => function ($model) {
-                            return Html::a('พิมพ์ใบมอบหมายงาน', ['nurse-patient/assign-report', 'event_ref' => $model->ref], ['class' => 'btn btn-primary btn-block','target'=>'_blank']);
+                            return Html::a('พิมพ์ใบมอบหมายงาน', ['nurse-patient/assign-report', 'event_ref' => $model->ref], ['target' => '_blank','class' => 'btn btn-primary btn-block']);
                  },
-                         'format' => 'html'
+                         'format' => 'raw'
              ],
-                            ['class' => 'yii\grid\ActionColumn'],
+                         [
+
+                'value' => function ($model) {
+                            return Html::a('พิมพ์ใบรายชื่อผู้ป่วย', ['nurse-patient/daily-report', 'event_ref' => $model->ref], ['target' => '_blank','class' => 'btn btn-default btn-block']);
+                 },
+                         'format' => 'raw'
+             ],
+//             'patient_flag',            
+             [
+                'class' => 'yii\grid\ActionColumn',
+//                'options' => ['class' => 'col-md-1'],
+                'header' => 'ลบ',
+                'template' => '{delete}'
+            ]
                         ],
                     ]);
                     ?>
