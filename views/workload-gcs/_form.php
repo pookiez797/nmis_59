@@ -58,32 +58,32 @@ use yii\web\JqueryAsset;
         </div>
         <div class="panel-body">
 
-<?php $form = ActiveForm::begin(); ?>
+            <?php $form = ActiveForm::begin(); ?>
             <div class="row">
                 <div class="col-md-4 col-sm-4">
-<?= $form->field($model, 'gcs_type')->dropDownList($model->getGCS()) ?>
+                    <?= $form->field($model, 'gcs_type')->dropDownList($model->getGCS()) ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3 col-sm-3 col-xs-3">
-<?= $form->field($model, 'e_type')->dropDownList([0, 1, 2, 3, 4]) ?>
+                    <?= $form->field($model, 'e_type')->dropDownList([0, 1, 2, 3, 4]) ?>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3">
-<?= $form->field($model, 'v_type')->dropDownList([0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 'T' => 'T']) ?>
+                    <?= $form->field($model, 'v_type')->dropDownList([0, 1, 2, 3, 4, 5, 'T' => 'T']) ?>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3">
-<?= $form->field($model, 'm_type')->dropDownList([0, 1, 2, 3, 4, 5, 6]) ?>
+                    <?= $form->field($model, 'm_type')->dropDownList([0, 1, 2, 3, 4, 5, 6]) ?>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3">
-<?= $form->field($model, 'score')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
+                    <?= $form->field($model, 'score')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
                 </div>
             </div>
 
 
 
 
-<?php
-$myscript = "$(function() {
+            <?php
+            $myscript = "$(function() {
                 
                 var total = 0;
                 $('#workloadgcs-score').val(total);
@@ -126,13 +126,13 @@ $myscript = "$(function() {
         });
         
         ";
-$this->registerJs($myscript);
-?>
+            $this->registerJs($myscript);
+            ?>
             <div class="form-group">
-            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'เพิ่มข้อมูล') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'เพิ่มข้อมูล') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
             </div>
 
-                <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end(); ?>
 
         </div>
     </div>

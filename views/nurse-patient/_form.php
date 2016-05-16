@@ -11,9 +11,7 @@ use app\models\LibAdmit;
 use app\models\LibDisc;
 use app\models\WorkloadDoctor;
 use yii\helpers\Url;
-//use yii\widgets\Pjax;
-//use yii\bootstrap\Modal;
-use kartik\popover\PopoverX;
+
 
 $lib_admit = ArrayHelper::map(LibAdmit::find()->all(), 'code', 'name');
 $lib_pttype = ArrayHelper::map(LibPttype::find()->all(), 'code', 'name');
@@ -59,8 +57,8 @@ function DateThai($strDate) {
 <div class="workload-event2-form">
 
     <h3>วันที่
-        <small><?= DateThai($event->date) ?><?php // Yii::$app->thaiFormatter->asDate($event->date, 'long') . " "      ?></small>  
-        เวร <small><?php echo ($event->period == 1) ? 'ดึก' : (($event->period == 2) ? 'เช้า' : 'บ่าย'); ?></small> 
+        <small><?= DateThai($event->date) ?><?php // Yii::$app->thaiFormatter->asDate($event->date, 'long') . " "      ?></small>
+        เวร <small><?php echo ($event->period == 1) ? 'ดึก' : (($event->period == 2) ? 'เช้า' : 'บ่าย'); ?></small>
     </h3>
 
     <?php
@@ -81,14 +79,14 @@ function DateThai($strDate) {
             <th width = '100' rowspan="2">E.T./<br/>T.T.<br/>tube</th>
             <th width = '100' rowspan="2">I.V.<br />Cath</th>
             <th width = '100' rowspan="2">Cut<br />down</th>
-            <th width = '100' rowspan="2">แพทย์เจ้าของไข้</th> 
+            <th width = '100' rowspan="2">แพทย์เจ้าของไข้</th>
         </tr>
         <tr>
 <!--            <th>เตรียมตรวจ</th>
             <th width = '5%'>CPR<br/>(ครั้ง)</th> -->
             <th>Diag</th>
             <th>ผ่าตัด</th>
-            <th width = '5%'>เฝ้าระวัง</th> 
+            <th width = '5%'>เฝ้าระวัง</th>
         </tr>
 
         <?php
@@ -204,7 +202,7 @@ function DateThai($strDate) {
 
             <div class="dropdown">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-    IC
+    <span class="glyphicon glyphicon-th-large"></span>
     <span class="caret"></span>
   </button>
             <ul class="dropdown-menu" aria-labelledby="เฝ้าระวัง">
@@ -296,7 +294,7 @@ $js = "
             var an = $(this).closest('tr').find('input[type=hidden][class*=txt_an]').val();
             console.log(an);
 });
-            
+
 $('.btn-diag').on('click',function(){
 //    alert('Heloo');
             var url = $('#url-adddiag').data('creatediag');
@@ -319,7 +317,7 @@ $('.btn-diag').on('click',function(){
                         console.log(data.an);
                    $('#w'+code).fadeOut('slow');
                    $(this).closest('tr').find('[class*=myDetail]').val(data.diag);
-                        
+
                     }
             });
         });";
@@ -329,4 +327,3 @@ $this->registerJs($js);
     <?php ActiveForm::end(); ?>
 
 </div>
-

@@ -12,6 +12,7 @@ class Report extends Model {
     public $year;
     public $ward;
     public $date;
+    public $period;
 
     /**
      * @return array the validation rules.
@@ -19,7 +20,7 @@ class Report extends Model {
     public function rules() {
         return [
             // username and password are both required
-            [['month', 'year'], 'required'],
+            [['month', 'year' ,'date' , 'period','ward'], 'required'],
         ];
     }
 
@@ -60,6 +61,7 @@ class Report extends Model {
             'year' => Yii::t('app', 'ปี'),
             'ward' => Yii::t('app', 'หอผู้ป่วย'),
             'date' => Yii::t('app','วันที่'),
+            'period' => Yii::t('app','เวร'),
             ];
     }
     

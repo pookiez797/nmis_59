@@ -1,12 +1,11 @@
-<?php 
-$this->title = Yii::t('app', 'รายงานข้อมูล Cardex');
-?>
+
 
 <head>
     <style>
         /*@page { size 8.5in 11in; margin: 1cm }*/
         div.page { page-break-before:  always }
     </style>
+    <title>รายงานข้อมูล Cardex</title>
 </head>
 <style type="text/css">
     table.coll 
@@ -101,7 +100,8 @@ foreach ($cardex as $c) {
     echo $txt_period;
     echo '</td>';
     echo '<td>';
-    echo $c['rm_normal']+($c['disc1']+$c['disc2']+$c['disc3']+$c['disc4']+$c['disc5']+$c['disc6'])-($c['admit1']+$c['admit2']+$c['admit3']);
+    echo $c['total_prev'];
+//    echo $c['rm_normal']+($c['disc1']+$c['disc2']+$c['disc3']+$c['disc4']+$c['disc5']+$c['disc6'])-($c['admit1']+$c['admit2']+$c['admit3']);
     echo '</td>';
 
     echo '<td>';

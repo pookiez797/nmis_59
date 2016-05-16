@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use Yii;
 
 /**
  * This is the ActiveQuery class for [[WorkloadTeam]].
@@ -9,11 +10,11 @@ namespace app\models;
  */
 class WorkloadTeamQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        $this->andWhere('[[status]]=1');
-        return $this;
-    }*/
+    public function byWard()
+     {
+         $this->andWhere('ward=:ward',[':ward' => Yii::$app->user->identity->ward]);
+         return $this;
+     }
 
     /**
      * @inheritdoc

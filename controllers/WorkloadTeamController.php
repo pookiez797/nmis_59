@@ -3,49 +3,45 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
-use app\models\WorkloadBed;
-use app\models\WorkloasBedSearch;
+use app\models\WorkloadTeam;
+use app\models\WorkloadTeamSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 
 /**
- * WorkloadBedController implements the CRUD actions for WorkloadBed model.
+ * WorkloadTeamController implements the CRUD actions for WorkloadTeam model.
  */
-class WorkloadBedController extends Controller{
-
-    public $layout = 'blank';
-
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
+class WorkloadTeamController extends Controller
+{
+  public function behaviors() {
+      return [
+          'access' => [
+              'class' => AccessControl::className(),
+              'rules' => [
+                  [
+                      'allow' => true,
+                      'roles' => ['@'],
+                  ],
+              ],
+          ],
+          'verbs' => [
+              'class' => VerbFilter::className(),
+              'actions' => [
+                  'delete' => ['post'],
+              ],
+          ],
+      ];
+  }
 
     /**
-     * Lists all WorkloadBed models.
+     * Lists all WorkloadTeam models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new WorkloasBedSearch();
+        $searchModel = new WorkloadTeamSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -55,7 +51,7 @@ class WorkloadBedController extends Controller{
     }
 
     /**
-     * Displays a single WorkloadBed model.
+     * Displays a single WorkloadTeam model.
      * @param integer $id
      * @return mixed
      */
@@ -67,35 +63,29 @@ class WorkloadBedController extends Controller{
     }
 
     /**
-     * Creates a new WorkloadBed model.
+     * Creates a new WorkloadTeam model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($team_ref,$team_name)
+    public function actionCreate()
     {
-        $model = new WorkloadBed();
-        $bed_query = WorkloadBed::find()->byTeam($team_ref);
-        $dataProvider = new ActiveDataProvider([
-            'query' => $bed_query,
-        ]);
-        $dataProvider->pagination->pageSize=50;
+        $model = new WorkloadTeam();
 
-        if ($model->load(Yii::$app->request->post()) && isset($team_ref)) {
-          $model->attributes = Yii::$app->request->post();
-          $model->team_ref = $team_ref;
-          $model->save();
-            return $this->refresh();
+        if ($model->load(Yii::$app->request->post() )) {
+            $model->attributes = Yii::$app->request->post();
+            $model->ward = Yii::$app->user->identity->ward;
+            $model->save();
+            // return $this->refresh();
+            return $this->redirect(['/workload-team']);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'team_name' => $team_name,
-                'dataProvider' => $dataProvider,
             ]);
         }
     }
 
     /**
-     * Updates an existing WorkloadBed model.
+     * Updates an existing WorkloadTeam model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -114,29 +104,28 @@ class WorkloadBedController extends Controller{
     }
 
     /**
-     * Deletes an existing WorkloadBed model.
+     * Deletes an existing WorkloadTeam model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $team_ref = $this->findModel($id)->team_ref;
         $this->findModel($id)->delete();
 
-        return $this->redirect(['workload-bed/create','team_ref'=>$team_ref,'team_name'=>'']);
+        return $this->redirect(['index']);
     }
 
     /**
-     * Finds the WorkloadBed model based on its primary key value.
+     * Finds the WorkloadTeam model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return WorkloadBed the loaded model
+     * @return WorkloadTeam the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = WorkloadBed::findOne($id)) !== null) {
+        if (($model = WorkloadTeam::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

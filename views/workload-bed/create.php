@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\WorkloadBed */
 
-$this->title = Yii::t('app', 'Create Workload Bed');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Workload Beds'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('app', 'เพิ่มเตียง '.$team_name);
+// $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Workload Beds'), 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="workload-bed-create">
 
@@ -16,6 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'team_name' => $team_name,
+        'dataProvider'=>$dataProvider,
     ]) ?>
 
 </div>

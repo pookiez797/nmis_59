@@ -41,8 +41,8 @@ class WorkloadBed extends \yii\db\ActiveRecord
         return [
             'ref' => Yii::t('app', 'Ref'),
             'team_ref' => Yii::t('app', 'Team Ref'),
-            'bed_type' => Yii::t('app', 'Bed Type'),
-            'bed_no' => Yii::t('app', 'Bed No'),
+            'bed_type' => Yii::t('app', 'ประเภทเตียง'),
+            'bed_no' => Yii::t('app', 'หมายเลขเตียง'),
         ];
     }
 

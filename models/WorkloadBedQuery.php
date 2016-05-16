@@ -9,11 +9,11 @@ namespace app\models;
  */
 class WorkloadBedQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        $this->andWhere('[[status]]=1');
-        return $this;
-    }*/
+  public function byTeam($team_ref)
+   {
+       $this->andWhere('team_ref=:team_ref',[':team_ref' => $team_ref]);
+       return $this;
+   }
 
     /**
      * @inheritdoc

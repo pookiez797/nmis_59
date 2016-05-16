@@ -28,7 +28,8 @@ AppAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => 'ระบบ WORKLOAD กลุ่มการพยาบาล',
-        'brandUrl' => Yii::$app->homeUrl,
+        // 'brandUrl' => Yii::$app->homeUrl,
+        'brandUrl' => ['/site/show-patient'],
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
@@ -47,16 +48,20 @@ AppAsset::register($this);
 //                        ['label' => 'เวรบ่าย', 'url' => ['/workload-event2/create-p3']],
 //                    ],
 //                ],
-            
+
             ['label' => 'เพิ่มข้อมูลพื้นฐาน',
                     'items' => [
                         ['label' => 'รายชื่อแพทย์', 'url' => ['/workload-doctor/index']],
                         ['label' => 'เจ้าหน้าที่', 'url' => ['/nurse-staff/index']],
+                        ['label' => 'ทีมพยาบาล', 'url' => ['/workload-team/index']],
                     ],
                 ],
             ['label' => 'รายงาน',
                     'items' => [
                         ['label' => 'ข้อมูล Cardex ประจำเดือน', 'url' => ['/report/cardex-report'],'linkOptions'=>['target'=>'_blank'] ],
+                        ['label' => 'ข้อมูล Cardex Sup', 'url' => ['/report/cardex-sup'],'linkOptions'=>['target'=>'_blank'] ],
+                        ['label' => 'ทะเบียนผู้ป่วย (Demo)', 'url' => ['/report/patient-report'],'linkOptions'=>['target'=>'_blank'] ],
+                        ['label' => 'ตารางเวร', 'url' => ['/report/stafftable-report'],'linkOptions'=>['target'=>'_blank'] ],
                     ],
                 ],
             Yii::$app->user->isGuest ?

@@ -43,8 +43,8 @@ class WorkloadTeam extends \yii\db\ActiveRecord
         return [
             'ref' => Yii::t('app', 'Ref'),
             'ward' => Yii::t('app', 'Ward'),
-            'team_name' => Yii::t('app', 'Team Name'),
-            'team_desc' => Yii::t('app', 'Team Desc'),
+            'team_name' => Yii::t('app', 'ชื่อทีม'),
+            'team_desc' => Yii::t('app', 'รายละเอียดทีม'),
             'count_bed' => Yii::t('app', 'Count Bed'),
         ];
     }
