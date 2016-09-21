@@ -227,6 +227,38 @@ function DateThai($strDate) {
                 echo Html::a('GCS', ['workload-gcs/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period], ['target' => '_blank', 'onclick' => 'myFunctionGCS' . $v->an . '()']);
                 echo '</li>';
                 ?>
+                <script>
+                    function myFunctionPs<?= $v->an ?>() {
+                        window.open("<?= Url::toRoute(['workload-ps/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period]) ?>", "_blank", "scrollbars=yes, resizable=yes, top=50, left=500, width=900, height=600");
+                    }
+                </script>
+                <?php
+                echo '<li>';
+                echo Html::a('Pressure Sore', ['workload-ps/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period], ['target' => '_blank', 'onclick' => 'myFunctionPs' . $v->an . '()']);
+                echo '</li>';
+                ?>
+
+                <script>
+                    function myFunctionFl<?= $v->an ?>() {
+                        window.open("<?= Url::toRoute(['workload-falling/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period]) ?>", "_blank", "scrollbars=yes, resizable=yes, top=50, left=500, width=900, height=600");
+                    }
+                </script>
+                <?php
+                echo '<li>';
+                echo Html::a('Falling', ['workload-falling/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period], ['target' => '_blank', 'onclick' => 'myFunctionFl' . $v->an . '()']);
+                echo '</li>';
+                ?>
+
+                <script>
+                    function myFunctionOther<?= $v->an ?>() {
+                        window.open("<?= Url::toRoute(['workload-other/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period]) ?>", "_blank", "scrollbars=yes, resizable=yes, top=50, left=500, width=900, height=600");
+                    }
+                </script>
+                <?php
+                echo '<li>';
+                echo Html::a('Re-admit/Phleb', ['workload-Other/create', 'an' => $v->an, 'fullname' => $v->title . $v->name . ' ' . $v->surname, 'period' => $event->period], ['target' => '_blank', 'onclick' => 'myFunctionOther' . $v->an . '()']);
+                echo '</li>';
+                ?>
 
             </ul>
             </div>

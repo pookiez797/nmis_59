@@ -12,6 +12,9 @@ use kartik\widgets\DatePicker;
 
 $this->title = Yii::t('app', 'รายการกิจกรรม');
 $this->params['breadcrumbs'][] = $this->title;
+
+$flag = '';
+
 ?>
 <div class="nurse-event-index">
 
@@ -44,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                     'attribute' => 'date',
                     'language' => 'th',
-                    'options' => ['placeholder' => 'เลือกวันที่'],
+                    'options' => ['placeholder' => 'เลือกวันที่เพื่อค้นหา'],
                     'pluginOptions' => [
                         'format' => 'yyyy-mm-dd',
                         'todayHighlight' => true,
@@ -68,6 +71,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                         'format' => 'html'
              ],
+             [
+
+                 'value' => function ($model) {
+
+                    if($model->patient_flag == 1){
+                      return Html::a('เพิ่มผู้ป่วย', ['nurse-patient/addnewpt', 'event_ref' => $model->ref], ['class' => 'btn btn-default btn-block']);
+                    }else{
+                      return '';
+                    }
+                    //  return Html::a('ผู้ป่วยรับใหม่', ['nurse-patient/addnewpt', 'event_ref' => $model->ref], ['class' => 'btn btn-default btn-block','disabled' => $flag]);
+                 },
+                         'format' => 'html'
+              ],
             [
 
                 'value' => function ($model) {
@@ -89,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                  },
                          'format' => 'raw'
              ],
-//             'patient_flag',            
+//             'patient_flag',
              [
                 'class' => 'yii\grid\ActionColumn',
 //                'options' => ['class' => 'col-md-1'],

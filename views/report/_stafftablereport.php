@@ -25,7 +25,7 @@ $mystaff = [];
         /*@page { size 8.5in 11in; margin: 1cm }*/
         div.page { page-break-before:  always }
     </style>
-    <title>รายงานทะเบียนผู้ป่วยประจำเดือน</title>
+    <title>ตารางเวรประจำเดือน</title>
 </head>
 <style type="text/css">
     table.coll

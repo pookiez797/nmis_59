@@ -53,8 +53,8 @@ class NurseStaffController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
-    
+
+
 
     /**
      * Displays a single NurseStaff model.
@@ -97,7 +97,7 @@ class NurseStaffController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->staff_ref]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -133,7 +133,7 @@ class NurseStaffController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-    
+
     public function actionStafflist($no){
         $model = Employee::find()->where(['no' => $no])->one();
         return Json::encode([
@@ -142,7 +142,7 @@ class NurseStaffController extends Controller
         'title'=>$model->title,
         'name'=>$model->name,
         'surname'=>$model->surname,
-        
+
     ]);
     }
 }

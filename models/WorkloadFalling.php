@@ -5,27 +5,25 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "workload_ps".
+ * This is the model class for table "workload_falling".
  *
  * @property integer $ref
  * @property string $an
- * @property string $ps_grade
- * @property string $ps_size
- * @property string $position
+ * @property string $falling_level
  * @property string $ward
  * @property string $reporter
  * @property string $period
  * @property string $start_date
  * @property string $end_date
  */
-class WorkloadPs extends \yii\db\ActiveRecord
+class WorkloadFalling extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'workload_ps';
+        return 'workload_falling';
     }
 
     /**
@@ -36,8 +34,7 @@ class WorkloadPs extends \yii\db\ActiveRecord
         return [
             [['start_date', 'end_date'], 'safe'],
             [['an'], 'string', 'max' => 10],
-            [['ps_grade', 'period'], 'string', 'max' => 1],
-            [['ps_size', 'position'], 'string', 'max' => 255],
+            [['falling_level', 'period'], 'string', 'max' => 1],
             [['ward', 'reporter'], 'string', 'max' => 3]
         ];
     }
@@ -50,9 +47,7 @@ class WorkloadPs extends \yii\db\ActiveRecord
         return [
             'ref' => Yii::t('app', 'Ref'),
             'an' => Yii::t('app', 'An'),
-            'ps_grade' => Yii::t('app', 'Pressure Grade'),
-            'ps_size' => Yii::t('app', 'ขนาดแผล'),
-            'position' => Yii::t('app', 'ตำแหน่งที่เกิด'),
+            'falling_level' => Yii::t('app', 'Falling Level'),
             'ward' => Yii::t('app', 'หน่วยงานที่เกิดแผล'),
             'reporter' => Yii::t('app', 'หน่วยงานที่รายงาน'),
             'period' => Yii::t('app', 'เวร'),
@@ -63,19 +58,19 @@ class WorkloadPs extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return WorkloadPsQuery the active query used by this AR class.
+     * @return WorkloadFallingQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new WorkloadPsQuery(get_called_class());
+        return new WorkloadFallingQuery(get_called_class());
     }
 
-    public function getPressureData() {
-        return @$this->hasOne(LibPressureGrade::className(), ['ref' => 'ps_grade']);
+    public function getFallingData() {
+        return @$this->hasOne(LibFalling::className(), ['ref' => 'falling_level']);
     }
 
-    public function getPressureName() {
-        return @$this->pressureData->pressure_grade;
+    public function getFallingName() {
+        return @$this->fallingData->falling;
     }
     public function getReporterData() {
         return @$this->hasOne(LibWard::className(), ['code' => 'reporter']);

@@ -19,7 +19,7 @@
         $strMonthThai = $strMonthCut[$strMonth];
         return "$strDay $strMonthThai $strYear";
     }
-    
+
     $event_date = new DateTime($event->date);
 
         if ($event->period == 3) {
@@ -33,7 +33,7 @@
 //	echo "ThaiCreate.Com Time now : ".DateThai($strDate);
     ?>
     <style type="text/css">
-        table.coll 
+        table.coll
         {
             border-collapse: collapse;
             font-size: 12px;
@@ -52,7 +52,7 @@
         ?>
         <div class="container">
             <table>
-                <tr> 
+                <tr>
                     <td colspan="28"><b>หอผู้ป่วย</b> <u><?= $ward_name->ward ?></u> โรงพยาบาลขอนแก่น <b>วันที่</b> <u><?= DateThai($event_date) ?></u> <b>เวลา</b> <u><?= ($event->period == 3) ? '00.00 - 08.00' : (($event->period == 1) ? '08.00 - 16.00' : '16.00 - 00.00') ?> น.</u> <b>เวร</b> <u><?= ($event->period == 3) ? 'ดึก' : (($event->period == 1) ? 'เช้า' : 'บ่าย') ?></u> <b>ผู้มอบหมายงาน</b>.......................... </td>
                 </tr>
                 <tr>
@@ -69,7 +69,7 @@
                                     <td rowspan="3" width="10">เตียง</td>
                                     <td rowspan="3" width="220">ชื่อผู้ป่วย</td>
                                     <td rowspan="3" width="200">การวินิจฉัยโรค</td>
-                                    <td rowspan="3" width="10">ประเภท<br/>ผู้ป่วย<br/>เวรดึก</td>
+                                    <td rowspan="3" width="10">ประเภท<br/>ผู้ป่วย<br/><?= ($event->period == 1) ? 'ดึก' : (($event->period == 2) ? 'เช้า' : 'บ่าย') ?></td>
                                     <td colspan="8" width="300">การจำแนกผู้ป่วย(ลงคะแนน)</td>
                                     <td rowspan="2" colspan="10" width="300">รวมประเภทผู้ป่วย</td>
                                     <td rowspan="3" width="100">หน้าที่พิเศษ</td>
@@ -112,7 +112,7 @@
                                             <td><?= $p['bed_type'] ?></td>
                                             <td><center>
                                         <font style="font-size: 14px;">
-                                        <?= $p["bed_no"] ?>                               
+                                        <?= $p["bed_no"] ?>
                                         </font></</center></td>
                             <td align="left"><font style="font-size: 14px;">
                                 <?php

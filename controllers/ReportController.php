@@ -657,7 +657,7 @@ public function actionPatientReport() {
                     where hn in (
                     select DISTINCT hn from nurse_event e left join nurse_patient p on e.ref=p.event_ref
                     where ward = '".$ward."' and MONTH(date)='".$month."' and YEAR(date) = '".$year."' and hn != ''
-         )
+                    )
         ) b
         on a.hn = b.hn
         order by admit_date_sort
@@ -785,5 +785,185 @@ $stafftable = $command->queryAll();
         ]);
     }
   }
+
+
+  public function actionAlltubeReport(){
+    $model = new Report();
+
+    if (($date_report = Yii::$app->request->post('Report'))) {
+
+    $ward = Yii::$app->user->identity->ward;
+    $month = $date_report['month'];
+    $year = $date_report['year'];
+    $days = date('t', strtotime($year . '-' . $month . '-01'));
+
+    $thismonth = date('Y-m-d', strtotime($year . '-' . $month . '-01'));
+    $nextmonth = date('Y-m-d', strtotime('+1 month',strtotime($thismonth)));
+
+    $month_name = $model->getMonthName($month);
+    $ward_name = $model->getWard($ward);
+
+    $sql = '      select
+                  ward
+                  ,round(sum(if(p.uti !=0,1,0))/3,0) as foley
+                  ,round(sum(if(p.vap !=0,1,0))/3,0) as ettube
+                  ,round(sum(if(p.phleb !=0,1,0))/3,0) as ivcath
+                  ,round(sum(if(p.cutdown !=0,1,0))/3,0) as cutdown
+                  from
+                  nurse_event e
+                  left join
+                  nurse_patient p
+                  on e.ref = p.event_ref
+                  where
+                  ward = '.$ward.'
+                  and month(e.date)="'.$month.'" and year(e.date)="'.$year.'"';
+
+$command = Yii::$app->db->createCommand($sql);
+$alltubetable = $command->queryAll();
+
+    return $this->renderPartial('_alltubereport', [
+                'month' => $month,
+                'year' => $year,
+                'month_name' => $month_name,
+                'ward_name' => $ward_name,
+                'days' => $days,
+                'alltubetable' => $alltubetable,
+                'fromdate'=>$thismonth,
+                'todate'=>$nextmonth,
+                'ward'=>$ward,
+    ]);
+
+  } else {
+      return $this->render('_callalltube', [
+                  'model' => $model,
+      ]);
+  }
+}
+
+public function actionIndicatorReport(){
+  $model = new Report();
+
+  if (($date_report = Yii::$app->request->post('Report'))) {
+
+  $ward = Yii::$app->user->identity->ward;
+  $month = $date_report['month'];
+  $year = $date_report['year'];
+  $days = date('t', strtotime($year . '-' . $month . '-01'));
+
+  $thismonth = date('Y-m-d', strtotime($year . '-' . $month . '-01'));
+  $nextmonth = date('Y-m-d', strtotime('+1 month',strtotime($thismonth)));
+
+  $month_name = $model->getMonthName($month);
+  $ward_name = $model->getWard($ward);
+
+  $sql = 'select *
+          from
+          (select 	a.ref
+          		,a.pressure_grade as name
+          		,if(b.count is null,0,b.count) as count
+          		,"แผล" as unit
+          from lib_pressure_grade a
+          left join
+          (
+          select ps_grade,count(an) as count
+          from workload_ps
+          where 	ward = '.$ward.'
+          		and month(start_date) = "'.$month.'"
+          		and year(start_date) = "'.$year.'"
+          GROUP BY ps_grade
+          ) b on a.ref = b.ps_grade
+
+          union
+
+          select 	a.ref
+          		,a.falling as name
+          		,if(b.count is null,0,b.count) as count
+          		,"ครั้ง" as unit
+          from
+          lib_falling a
+          left join
+          (
+          select a.falling_level,count(a.an) as count
+          from workload_falling a
+          where 	a.ward = '.$ward.'
+          		and month(a.start_date) = "'.$month.'"
+          		and year(a.start_date) = "'.$year.'"
+          group by a.falling_level
+          ) b
+          on a.ref = b.falling_level
+
+          union
+
+          SELECT 	a.ref
+          		,a.name
+          		,if(b.count is null,0,b.count) as count
+          		,"ครั้ง" as unit
+          from lib_other a
+          left join
+          (
+          select type,count(an) as count
+          from workload_other
+          where 	ward = '.$ward.'
+          		and month(start_date) = "'.$month.'"
+          		and year(start_date) = "'.$year.'"
+          GROUP BY type
+          ) b on a.ref = b.type
+
+          union
+
+          select
+          		1 as refer
+          		,"จำนวนวันนอนรวมที่ผู้ป่วยได้รับสารน้ำทางหลอดเลือดดำส่วนปลาย" as name
+          		,round(sum(if(p.phleb !=0,1,0))/3,0) as ivcath
+          		,"วัน" as unit
+          from
+          nurse_event e
+          left join 	nurse_patient p		on e.ref = p.event_ref
+          where
+          		ward = '.$ward.'
+          		and month(e.date) = "'.$month.'"
+          		and year(e.date) = "'.$year.'"
+
+          union
+
+          select 	1 as ref
+          		,"จำนวนวันนอนรวมผู้ป่วยทั้งหมด" as name
+          		,count(hn) as los
+          		,"วัน"as unit
+          from
+          (
+          	select 	hn
+          	from nurse_event e
+          			left join nurse_patient p on e.ref=p.event_ref
+          	where ward = '.$ward.'
+          			and MONTH(date)= "'.$month.'"
+          			and YEAR(date) = "'.$year.'"
+          			and hn != ""
+          	GROUP BY name,surname,date
+          	ORDER BY date,AN
+          ) a
+          ) indicator ';
+
+$command = Yii::$app->db->createCommand($sql);
+$indicator = $command->queryAll();
+
+  return $this->renderPartial('_indicatorreport', [
+              'month' => $month,
+              'year' => $year,
+              'month_name' => $month_name,
+              'ward_name' => $ward_name,
+              'days' => $days,
+              'indicator' => $indicator,
+              'fromdate'=>$thismonth,
+              'todate'=>$nextmonth,
+              'ward'=>$ward,
+  ]);
+
+} else {
+    return $this->render('_callindicator', [
+                'model' => $model,
+    ]);
+}
+}
 
 }

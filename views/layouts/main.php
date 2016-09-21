@@ -62,6 +62,8 @@ AppAsset::register($this);
                         ['label' => 'ข้อมูล Cardex Sup', 'url' => ['/report/cardex-sup'],'linkOptions'=>['target'=>'_blank'] ],
                         ['label' => 'ทะเบียนผู้ป่วย (Demo)', 'url' => ['/report/patient-report'],'linkOptions'=>['target'=>'_blank'] ],
                         ['label' => 'ตารางเวร', 'url' => ['/report/stafftable-report'],'linkOptions'=>['target'=>'_blank'] ],
+                        ['label' => 'วันนอนรวมการให้สารน้ำทางหลอดเลือด', 'url' => ['/report/alltube-report'],'linkOptions'=>['target'=>'_blank'] ],
+                        ['label' => 'รายงานแบบรวบรวมข้อมูลตัวชี้วัดคุณภาพทางการพยาบาล', 'url' => ['/report/indicator-report'],'linkOptions'=>['target'=>'_blank'] ],
                     ],
                 ],
             Yii::$app->user->isGuest ?
