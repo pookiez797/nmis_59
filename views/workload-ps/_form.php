@@ -15,6 +15,20 @@ use kartik\grid\GridView;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
+<script type="text/javascript">
+
+    function disablefield(ele) {
+      // $("#outer").attr("checked") ? alert("Checked") : alert("Unchecked");
+        if (ele.checked) {
+          // alert('checked!!');
+            document.getElementById('workloadps-ward').disabled = 'disabled';
+        } else {
+          // alert('unchecked!!');
+            document.getElementById('workloadps-ward').disabled = '';
+        }
+    }
+</script>
+
 <div class="workload-ps-form">
   <?=
   GridView::widget([
@@ -67,6 +81,11 @@ use kartik\grid\GridView;
   ?>
 
     <?php $form = ActiveForm::begin(); ?>
+
+    <div class="row">
+      <div class="col-md-6 col-xs-6"><input type="checkbox" id="outer" name="outer" value = "999" onChange="disablefield(this)"> <b>เกิดแผลภายนอก รพ.</b></div>
+    </div>
+    <br/>
 
     <div class="row">
       <div class="col-xs-6">

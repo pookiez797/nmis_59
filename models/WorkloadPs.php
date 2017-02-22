@@ -90,6 +90,11 @@ class WorkloadPs extends \yii\db\ActiveRecord
     }
 
     public function getWardName() {
+      if(@$this->wardData->name != ''){
         return @$this->wardData->name;
+      }else{
+        return 'ภายนอก รพ.';
+      }
+        // return @$this->wardData->name;
     }
 }

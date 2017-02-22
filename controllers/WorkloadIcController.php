@@ -17,7 +17,7 @@ use yii\data\ActiveDataProvider;
 class WorkloadIcController extends Controller
 {
     public $layout = 'blank';
-    
+
     public function behaviors()
     {
         return [
@@ -79,9 +79,12 @@ class WorkloadIcController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => $ic_query,
         ]);
-        
+
          if (Yii::$app->request->post('WorkloadIc') && isset($an)) {
             $model->attributes = Yii::$app->request->post('WorkloadIc');
+            if(Yii::$app->request->post('outer')){ //ถ้าเลือก ติดเชื้อภายนอก รพ. ให้ infect_ward = 999
+              $model->infect_ward = 999;
+            }
             $model->an = $an;
             $model->save();
             return $this->refresh();

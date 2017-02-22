@@ -59,9 +59,9 @@ use yii\helpers\ArrayHelper;
 
     <div class="row">
         <div class="col-md-4">
-            <?= $form->field($model, 'position')->dropDownList(ArrayHelper::map(LibPosition::find()->all(), 'ref', 'position')) ?>
+            <?= $form->field($model, 'position')->dropDownList(ArrayHelper::map(LibPosition::find()->all(), 'ref', 'name')) ?>
         </div>
-    </div> 
+    </div>
 
     <div class="row">
         <div class="col-md-1"><?= $form->field($model, 'hn')->checkbox() ?></div>

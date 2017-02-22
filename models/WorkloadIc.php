@@ -69,26 +69,31 @@ class WorkloadIc extends \yii\db\ActiveRecord
     {
         return new WorkloadIcQuery(get_called_class());
     }
-    
+
     public function getPositionData() {
         return @$this->hasOne(LibIcposition::className(), ['ref' => 'position']);
     }
     public function getPositionName() {
         return @$this->positionData->name;
     }
-    
+
     public function getDiseaseData() {
         return @$this->hasOne(LibDisease::className(), ['ref' => 'disease']);
     }
-    
+
     public function getDiseaseName() {
         return @$this->diseaseData->disease;
     }
     public function getOfficeData() {
+
         return @$this->hasOne(Ward::className(), ['code' => 'infect_ward']);
     }
-    
+
     public function getOfficeName() {
+      if(@$this->officeData->ward != ''){
         return @$this->officeData->ward;
+      }else{
+        return 'ภายนอก รพ.';
+      }
     }
 }

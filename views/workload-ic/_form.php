@@ -22,6 +22,21 @@ $lib_icposition = ArrayHelper::map(LibIcposition::find()->all(), 'ref', 'name');
   <li role="presentation"><a href="#">GCS</a></li>
   <li role="presentation"><a href="#">Key Muscle</a></li>
 </ul>-->
+
+<script type="text/javascript">
+
+    function disablefield(ele) {
+      // $("#outer").attr("checked") ? alert("Checked") : alert("Unchecked");
+        if (ele.checked) {
+          // alert('checked!!');
+            document.getElementById('workloadic-infect_ward').disabled = 'disabled';
+        } else {
+          // alert('unchecked!!');
+            document.getElementById('workloadic-infect_ward').disabled = '';
+        }
+    }
+</script>
+
 <div class="workload-ic-form">
      <?=
     GridView::widget([
@@ -73,8 +88,14 @@ $lib_icposition = ArrayHelper::map(LibIcposition::find()->all(), 'ref', 'name');
 <?php $form = ActiveForm::begin(); ?>
 
             <div class="row">
+              <div class="col-md-6 col-xs-6"><input type="checkbox" id="outer" name="outer" value = "999" onChange="disablefield(this)"> <b>ติดเชื้อภายนอก รพ.</b></div>
+            </div>
+            <br/>
+            <div class="row">
                 <div class="col-md-6 col-xs-6"><?= $form->field($model, 'position')->dropDownList($lib_icposition) ?></div>
-                <div class="col-md-6 col-xs-6"><?php //  $form->field($model, 'factor')->textInput() ?></div>
+                <!-- <div class="col-md-6 col-xs-6"><input type="checkbox" id="outer" name="outer" value = "999"> <b>ติดเชื้อภายนอก รพ.</b></div> -->
+                <!-- <div class="col-md-6 col-xs-6"><?php //  $form->field($model, 'factor')->textInput() ?></div> -->
+
             </div>
             <div class="row">
                 <div class="col-md-6 col-xs-6"><?= $form->field($model, 'disease')->dropDownList($lib_disease) ?></div>
@@ -95,12 +116,12 @@ $lib_icposition = ArrayHelper::map(LibIcposition::find()->all(), 'ref', 'name');
                     ?>
                 </div>
                 <div class="col-md-6 col-xs-6"><?= $form->field($model, 'infect_ward')->dropDownList($lib_ward) ?></div>
-                
+
             </div>
             <?= $form->field($model, 'hn')->hiddenInput(['maxlength' => true])->label(false) ?>
 
             <?= $form->field($model, 'an')->hiddenInput(['maxlength' => true])->label(false) ?>
-            
+
 
             <div class="form-group">
 <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'เพิ่มข้อมูล') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

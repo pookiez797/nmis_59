@@ -29,7 +29,7 @@ class WorkloadBed extends \yii\db\ActiveRecord
     {
         return [
             [['team_ref', 'bed_no'], 'integer'],
-            [['bed_type'], 'string', 'max' => 1]
+            [['bed_type'], 'string', 'max' => 3]
         ];
     }
 

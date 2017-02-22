@@ -8,7 +8,7 @@ use app\models\Report;
 ?>
 
 <?php
-$this->title = Yii::t('app', 'ตารางเวร');
+$this->title = Yii::t('app', 'รายงานตัวชี้วัดคุณภาพทางการพยาบาล');
 $current_year = date('Y');
 $current_month = date('m');
 //echo '<pre>';
@@ -19,7 +19,7 @@ $current_month = date('m');
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <h3>ตารางเวรประจำเดือน </h3>
+    <h3>รายงานตัวชี้วัดคุณภาพทางการพยาบาล </h3>
     <div class="row">
         <div class="col-lg-2">
             <?php $model->month = $current_month ?>

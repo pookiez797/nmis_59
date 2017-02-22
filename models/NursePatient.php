@@ -51,6 +51,13 @@ class NursePatient extends \yii\db\ActiveRecord {
     const TUBE_B = 1;
     const TUBE_V = 2;
     const TUBE_T = 3;
+    const IVX = 0;
+    const IV1 = 1;
+    const IV2 = 2;
+    const IV3 = 3;
+    const IV4 = 4;
+    const IV5 = 5;
+
 
     public function rules() {
         return [
@@ -97,7 +104,7 @@ class NursePatient extends \yii\db\ActiveRecord {
             'lastupdate' => Yii::t('app', 'Lastupdate'),
         ];
     }
-    
+
     public static function itemAlias($type) {
         $items = [
             'item' => [
@@ -109,19 +116,31 @@ class NursePatient extends \yii\db\ActiveRecord {
                 self::TUBE_B => 'B =On Bird',
                 self::TUBE_V => 'V =On Ventilator',
                 self::TUBE_T => 'T =T-piece'
+            ],
+            'ivtube' => [
+                self::IVX => 'X =OFF',
+                self::IV1 => '1 เส้น',
+                self::IV2 => '2 เส้น',
+                self::IV3 => '3 เส้น',
+                self::IV4 => '4 เส้น',
+                self::IV5 => '5 เส้น'
             ]
         ];
         return array_key_exists($type, $items) ? $items[$type] : [];
         //
     }
-    
+
      public function getItem() {
         return self::itemAlias('item');
     }
      public function getTube() {
         return self::itemAlias('tube');
     }
-    
+
+    public function getIVtube() {
+       return self::itemAlias('ivtube');
+   }
+
      public static function find()
     {
         return new NursePatientQuery(get_called_class());

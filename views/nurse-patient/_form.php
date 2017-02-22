@@ -20,6 +20,7 @@ $lib_bedtype = ArrayHelper::map(LibBedtype::find()->all(), 'code', 'name');
 $lib_doctor = ArrayHelper::map(WorkloadDoctor::find()->byWard()->all(), 'ref', 'Fullname');
 $lib_item = $model->getItem();
 $lib_tube = $model->getTube();
+$lib_ivtube = $model->getIVtube();
 //print_r($lib_doctor);
 //print_r($lib_bedtype2);
 /* @var $this yii\web\View */
@@ -283,7 +284,7 @@ function DateThai($strDate) {
     if (isset($pv_data[$v->hn])) {
         $model->phleb = $pv_data['phleb'][$v->hn];
     }
-    echo $form->field($model, "[$v->hn]phleb")->dropDownList($lib_item, ['title' => "I.V.Cath"])->label(false);
+    echo $form->field($model, "[$v->hn]phleb")->dropDownList($lib_ivtube, ['title' => "I.V.Cath"])->label(false);
 
     echo '</td>';
     echo '<td>';

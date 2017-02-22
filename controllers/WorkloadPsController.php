@@ -72,7 +72,7 @@ class WorkloadPsController extends Controller
      * @return mixed
      */
 
-    
+
 
     public function actionCreate($an)
     {
@@ -87,7 +87,11 @@ class WorkloadPsController extends Controller
 
         if (Yii::$app->request->post('WorkloadPs') && isset($an)) {
             $model->attributes = Yii::$app->request->post('WorkloadPs');
+            if(Yii::$app->request->post('outer')){
+              $model->ward = '999';
+            }
             $model->an = $an;
+
             // $model->reporter = $ward;
             $model->save();
             return $this->refresh();
